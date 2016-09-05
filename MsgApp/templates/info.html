@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Reminder Application</title>
+ 
+ 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Home</a>
+                    </li>
+                    <li role="presentation"><a href="#">Sign In</a>
+                    </li>
+                    <li role="presentation"><a href="showSignUp">Sign Up</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Reminder Application</h3>
+        </div>
+ 
+        <div class="jumbotron">
+            <h1>User info</h1>
+            <p class="lead"></p>
+            </p>
+            {% if name %}
+            <p> Name: {{ name }} </p>
+            <p> Phone: {{ phone }} </p>
+            <p> Running since: {{ start }} [Local time]
+                               <br>
+                               ({{ td.days }} day(s),
+                               {{ td.seconds//3600 }} hour(s))
+            </p>
+           <form method="POST">
+           <input type="submit" name="submit" value="Delete Reminder" class="btn btn-block btn-danger"/>
+           <input type="submit" name="submit" value="View Logs" class="btn btn-block btn-primary"/>
+           </form>
+           {% endif %}
+
+            {% for message in get_flashed_messages() %}
+            <p style="color: red;">{{ message }}</p> {% endfor %}
+
+        </div>
+ 
+        <footer class="footer">
+            <p>Source available on <a href="https://github.com/anujkhare">github</a></p>
+        </footer>
+ 
+    </div>
+</body>
