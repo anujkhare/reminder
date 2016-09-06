@@ -1,0 +1,8 @@
+{
+  "name": "Python-flask: Reminder application",
+  "description": "A simple python-flask application to remind you of your name!.",
+  "image": "heroku/python",
+  "repository": "https://github.com/heroku/python-getting-started",
+  "keywords": ["python", "flask", "postgresql", "celery", "redis" ],
+  "addons": [ "heroku-postgresql" ]
+}

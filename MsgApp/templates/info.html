@@ -3,13 +3,8 @@
  
 <head>
     <title>Reminder Application</title>
- 
- 
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
- 
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
- 
- 
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/jumbotron-narrow.css" rel="stylesheet">
 </head>
  
 <body>
@@ -18,12 +13,11 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="#">Home</a>
+                    <li role="presentation"><a href="/">Sign In</a>
                     </li>
-                    <li role="presentation"><a href="#">Sign In</a>
+                    <li role="presentation" class="active"><a href="/user/info">Info</a>
                     </li>
-                    <li role="presentation"><a href="showSignUp">Sign Up</a>
-                    </li>
+                    <li role="presentation"><a href="/user/logs">Logs</a>
                 </ul>
             </nav>
             <h3 class="text-muted">Reminder Application</h3>
@@ -53,7 +47,7 @@
         </div>
  
         <footer class="footer">
-            <p>Source available on <a href="https://github.com/anujkhare">github</a></p>
+            <p>Source available on <a href="https://github.com/anujkhare/reminder">github</a></p>
         </footer>
  
     </div>

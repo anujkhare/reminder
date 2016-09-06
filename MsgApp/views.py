@@ -1,7 +1,8 @@
 from flask import render_template, request, session, redirect, url_for, flash
+from sqlalchemy.exc import IntegrityError
 
-from MsgApp import app, db, datetime, LOG_FILE
-from MsgApp.models import UserData
+from MsgApp import app, db, datetime
+from MsgApp.models import UserData, UserLogs
 
 
 def get_or_create_user(session, model, **kwargs):
@@ -33,28 +34,27 @@ def index():
     params['phone'] = request.form['phone']
     params['start_time'] = datetime.datetime.utcnow()  # USE UTC time!
     params['tz_offset'] = request.form['tz_offset']
-    print(params['tz_offset'])
     session.update(params)
+
     try:
         instance, is_new = get_or_create_user(db.session, UserData, **params)
-    except:
+        db.session.flush()
+    except IntegrityError:
+        db.session.rollback()
         flash("Name and phone number don't match. Try again.")
         return render_template('index.html',
                                name=session.get('name', ''),
                                phone=session.get('phone', '')
                                )
 
-    if is_new:
-        print('You need to start the scheduler here!')
-
-    return redirect(url_for('info',
-                            name=session.get('name')
-                            )
-                    )
+    return redirect(url_for('info'))
 
 
-@app.route("/user/info/<name>", methods=['GET', 'POST'])
-def info(name):
+@app.route("/user/info", methods=['GET', 'POST'])
+def info():
+    name = session.get('name', None)
+    if not name:
+        flash('Unable to read session. Enable cookies and sign in again!')
     if request.method == 'GET':
         instance = db.session.query(UserData).filter_by(name=name).first()
         if not instance:
@@ -70,6 +70,7 @@ def info(name):
                                td=(datetime.datetime.utcnow() - start)
                                )
 
+    # If user clicked on "Delete" or "View Logs"
     elif request.method == 'POST':
         if request.form['submit'] == 'Delete Reminder':
             instance = db.session.query(UserData).filter_by(name=name).first()
@@ -79,17 +80,22 @@ def info(name):
             return redirect(url_for('index'))
 
         elif request.form['submit'] == 'View Logs':
-            return redirect(url_for('logs', name=name))
+            return redirect(url_for('logs'))
 
 
-@app.route("/user/logs/<name>", methods=['GET'])
-def logs(name):
+@app.route("/user/logs", methods=['GET'])
+def logs():
+    name = session.get('name', None)
+    if not name:
+        flash('Unable to read session. Enable cookies and sign in again!')
     logs = []
-    try:
-        with open(LOG_FILE.format(name), 'r') as logfile:
-            logs = logfile.readlines()
-    except IOError:
-        flash('Error: No log file exists for this user!')
+    logs = db.session.query(UserLogs).filter_by(name=name)
+    if not logs.first():
+        flash('No logs exist for this user!')
+    # try:
+    #     with open(LOG_FILE.format(name), 'r') as logfile:
+    #         logs = logfile.readlines()
+    # except IOError:
     return render_template('logs.html',
                            name=name,
                            logs=logs)

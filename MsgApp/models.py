@@ -22,3 +22,19 @@ class UserData(db.Model):
     def get_local_start_time(self):
         timediff = datetime.timedelta(minutes=self.tz_offset)
         return self.start_time - timediff
+
+
+class UserLogs(db.Model):
+    """ Implementing logs in a single SQL table, because Heroku uses ephemeral
+        storage making write to disk files for logs unstable. Find better way?
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=False)
+    log = db.Column(db.VARCHAR)
+
+    def __init__(self, name, log):
+        self.name = name
+        self.log = log
+
+    def __repr__(self):
+        return '{}'.format(self.log)
